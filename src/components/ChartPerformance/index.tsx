@@ -1,20 +1,21 @@
 type Props = {
   label: string
-  amount?: number
+  amount: number
 }
 
-export const ChartTitle = ({ label, amount }: Props) => {
-  const formattedNumber = amount
-    ? new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount)
-    : undefined
+export const ChartPerformance = ({ label, amount }: Props) => {
+  const sign = amount > 0 ? '+' : ''
+  const color = amount > 0 ? 'text-emerald-400' : 'text-red-500'
 
   return (
-    <div className="flex">
-      <div>{label}</div>
-      {amount ? <div>: {formattedNumber}</div> : null}
+    <div className="flex items-center space-x-2">
+      <div>{label}:</div>
+      <div className="font-medium text-xl">
+        <span className={color}>
+          {sign}
+          {amount.toFixed(2)}%
+        </span>
+      </div>
     </div>
   )
 }

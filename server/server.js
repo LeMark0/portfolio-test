@@ -1,8 +1,6 @@
 import polka from 'polka'
 import cors from 'cors'
 
-const assetTickers = ['APPL', 'GOOG', 'GBP', 'BTC', 'ETH', 'MSFT', 'TSLA']
-
 const assetsFixture = [
   {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -32,30 +30,59 @@ const assetsFixture = [
     id: '123e4567-e89b-12d3-a456-426614174012',
     name: 'TSLA',
   },
+  {
+    id: '123e4567-e89b-12d3-a456-426614174013',
+    name: 'EUR',
+  },
 ]
 
-function generatePrices(startDate, endDate) {
+function generatePrices(startDate, endDate, targetEndPrices) {
   const basePrices = {
     APPL: 150,
     GOOG: 2800,
-    GBP: 1.3,
-    BTC: 50000,
+    GBP: 1.1,
+    EUR: 1.1,
+    BTC: 16000,
     ETH: 4000,
     MSFT: 300,
     TSLA: 700,
   }
 
+  // Calculate the number of days between startDate and endDate
+  const timeDiff = endDate.getTime() - startDate.getTime()
+  const daysDiff = timeDiff / (1000 * 3600 * 24)
+
+  // Calculate the daily increment/decrement needed for each asset to reach its target end price
+  let dailyTrends = {}
+  for (let asset in basePrices) {
+    if (targetEndPrices[asset] !== undefined) {
+      dailyTrends[asset] = (targetEndPrices[asset] - basePrices[asset]) / daysDiff
+    } else {
+      dailyTrends[asset] = 0 // No target end price means no trend needed
+    }
+  }
+
   let prices = []
   let currentDate = new Date(startDate.getTime())
 
+  const assetTickers = Object.keys(basePrices)
+
+  startDate.setHours(0, 0, 0, 0)
+  endDate.setHours(23, 59, 59, 999)
+
   while (currentDate <= endDate) {
     assetTickers.forEach((asset) => {
-      const fluctuation = Math.random() * 0.1 - 0.05 // +/- 5%
-      const price = basePrices[asset] * (1 + fluctuation)
+      // Apply the daily trend (increment or decrement) for the asset
+      basePrices[asset] += dailyTrends[asset]
+
+      // Add fluctuation: +/- 5%
+      const fluctuation = (Math.random() * 0.1 - 0.05) * basePrices[asset]
+      const priceWithFluctuation = basePrices[asset] + fluctuation
+
       prices.push({
         date: currentDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
         asset: asset,
-        price: parseFloat(price.toFixed(2)), // Round to 2 decimal places
+        price: parseFloat(priceWithFluctuation.toFixed(2)), // Round to 2 decimal places
       })
     })
     currentDate.setDate(currentDate.getDate() + 1) // Move to next day
@@ -64,18 +91,18 @@ function generatePrices(startDate, endDate) {
   return prices
 }
 
-function generatePortfolio(selectedAssets) {
-  const assets =
-    selectedAssets ||
-    assetTickers
-      .sort(() => 0.5 - Math.random())
-      .slice(0, Math.floor(Math.random() * assetTickers.length) + 1)
+function generatePortfolio() {
+  return [
+    { asset: 'APPL', quantity: Math.floor(Math.random() * 100) + 1 },
+    { asset: 'GOOG', quantity: Math.floor(Math.random() * 10) + 1 },
+    { asset: 'TSLA', quantity: Math.floor(Math.random() * 100) + 1 },
 
-  // Assume each asset has a random quantity for the sake of example
-  return assets.map((asset) => ({
-    asset: asset,
-    quantity: Math.floor(Math.random() * 100) + 1, // Random quantity between 1 and 100
-  }))
+    { asset: 'GBP', quantity: Math.floor(Math.random() * 100_000) + 1 },
+    { asset: 'EUR', quantity: Math.floor(Math.random() * 100_000) + 1 },
+
+    { asset: 'BTC', quantity: Math.floor(Math.random() * 10) + 1 },
+    { asset: 'ETH', quantity: Math.floor(Math.random() * 10) + 1 },
+  ]
 }
 
 function selectPrices(prices, { assets, asOf, from, to }) {
@@ -162,7 +189,16 @@ const endDate = new Date()
 const startDate = new Date()
 startDate.setFullYear(startDate.getFullYear() - 1) // One year ago
 
-const prices = generatePrices(startDate, endDate)
+const prices = generatePrices(startDate, endDate, {
+  APPL: 190,
+  GOOG: 2900,
+  GBP: 1.3,
+  EUR: 1.14,
+  BTC: 20000,
+  ETH: 5000,
+  MSFT: 360,
+  TSLA: 900,
+})
 const portfolio = generatePortfolio()
 
 polka()
@@ -172,7 +208,7 @@ polka()
   })
   .get('/prices', (req, res) => {
     const data = selectPrices(prices, {
-      assets: req.query.assets,
+      assets: req.query.assets ? req.query.assets.split(',') : undefined,
       asOf: req.query.asOf,
       from: req.query.from,
       to: req.query.to,

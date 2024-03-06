@@ -3,7 +3,7 @@ type Props = {
   amount?: number
 }
 
-export const ChartTitle = ({ label, amount }: Props) => {
+export const ChartAmount = ({ label, amount }: Props) => {
   const formattedNumber = amount
     ? new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -12,9 +12,11 @@ export const ChartTitle = ({ label, amount }: Props) => {
     : undefined
 
   return (
-    <div className="flex">
-      <div>{label}</div>
-      {amount ? <div>: {formattedNumber}</div> : null}
+    <div className="flex items-center space-x-2">
+      <div>{label}:</div>
+      {amount ? (
+        <div className="text-slate-100 font-medium text-xl"> {formattedNumber}</div>
+      ) : null}
     </div>
   )
 }

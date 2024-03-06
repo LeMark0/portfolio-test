@@ -1,6 +1,6 @@
 import './App.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Portfolio } from './components/Portfolio'
+import { Portfolio } from './containers/Portfolio'
 
 const queryClient = new QueryClient()
 

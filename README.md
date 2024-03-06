@@ -1,30 +1,62 @@
-# React + TypeScript + Vite
+# Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This Portfolio project is a modern web application designed to showcase financial assets using
+dynamic charts and data visualization. It is built using React, TypeScript, and Tailwind CSS for the
+frontend, with Flowbite and Chart.js for UI components and charts. The backend mock server uses
+Polka, allowing for dynamic data simulation and endpoint parameter functionality.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Interactive charts to visualize financial data
+- Dynamic mock server for data simulation
+- Responsive design with Tailwind CSS
+- Components from Flowbite-react
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Before you begin, ensure you have installed Node.js on your machine. This project
+supports `pnpm`, `npm`, and `yarn` as package managers.
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+Clone the project, then choose your preferred package manager for installation:
+
+```bash
+pnpm install
+npm install
+npm install
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Starting the Project
+
+### Starting the Frontend
+
+```bash
+pnpm dev
+npm run dev
+yarn dev
+```
+
+### Starting the Mock server
+
+```bash
+pnpm server
+npm run server
+yarn server
+```
+
+### Starting Frontend and Mock Server Together
+
+```bash
+pnpm start
+npm start
+yarn start
+```
+
+## Usage
+
+After starting the project, you can access the frontend through your web browser
+at http://localhost:5173 (or another port if you configured it differently). The mock server allows
+you to work with dynamic data and test different frontend functionalities and available
+at http://localhost:3000.
+
