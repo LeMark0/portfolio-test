@@ -75,7 +75,11 @@ export const History = ({ assetType, dateFrom, dateTo }: Props) => {
     const baseValue = dataset.values[0]
     const resultValue = dataset.values[dataset.values.length - 1]
 
-    return ((resultValue - baseValue) / baseValue) * 100
+    if (!(baseValue && resultValue)) {
+      return 0
+    }
+
+    return ((resultValue - baseValue) / baseValue) * 100 ?? 0
   }, [dataset.values])
 
   const isLoading = isPortfolioLoading || arePricesLoading
