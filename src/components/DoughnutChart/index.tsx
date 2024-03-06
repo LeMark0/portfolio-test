@@ -27,8 +27,6 @@ export const DoughnutChart = ({ values, labels }: Props) => {
       data={data}
       options={{
         responsive: true,
-        // maintainAspectRatio: true,
-        // aspectRatio: 2,
       }}
     />
   )
